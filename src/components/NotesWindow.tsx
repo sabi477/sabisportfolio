@@ -1,0 +1,188 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { useState, useRef, useCallback } from "react";
+
+interface NotesWindowProps {
+  onClose: () => void;
+  zIndex: number;
+  onFocus: () => void;
+}
+
+const skills = [
+  "AI & Data Engineering",
+  "Software Pipeline Architecture",
+  "Web Development (Next.js, React, TypeScript)",
+  "Data Analysis & Visualization",
+  "Python, SQL, Machine Learning",
+  "API Development & Integration",
+  "Mobile App Design",
+  "Prototyping & Wireframing",
+  "UI/UX Design",
+  "Visual Storytelling",
+  "Marketplace Visuals (App Store & Google Play)",
+  "Brand Identity Design",
+  "Social Media Design",
+  "Photography",
+];
+
+export default function NotesWindow({ onClose, zIndex, onFocus }: NotesWindowProps) {
+  const [position, setPosition] = useState({
+    x: Math.max(50, (typeof window !== "undefined" ? window.innerWidth : 1200) / 2 - 320),
+    y: Math.max(30, (typeof window !== "undefined" ? window.innerHeight : 800) / 2 - 280),
+  });
+  const [activeTab, setActiveTab] = useState<"about" | "skills" | "contact">("about");
+  const isDragging = useRef(false);
+  const dragStart = useRef({ x: 0, y: 0 });
+
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      isDragging.current = true;
+      dragStart.current = { x: e.clientX - position.x, y: e.clientY - position.y };
+      onFocus();
+      const handleMouseMove = (e: MouseEvent) => {
+        if (!isDragging.current) return;
+        setPosition({ x: e.clientX - dragStart.current.x, y: Math.max(0, e.clientY - dragStart.current.y) });
+      };
+      const handleMouseUp = () => {
+        isDragging.current = false;
+        window.removeEventListener("mousemove", handleMouseMove);
+        window.removeEventListener("mouseup", handleMouseUp);
+      };
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+    },
+    [position, onFocus]
+  );
+
+  return (
+    <motion.div
+      className="absolute rounded-xl overflow-hidden"
+      style={{
+        zIndex,
+        left: position.x,
+        top: position.y,
+        width: 640,
+        height: 520,
+        boxShadow: "0 12px 40px rgba(0,0,0,0.25), 0 0 1px rgba(0,0,0,0.1)",
+      }}
+      initial={{ scale: 0.5, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0.5, opacity: 0 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25, mass: 0.8 }}
+      onMouseDown={onFocus}
+    >
+      <div className="w-full h-full flex flex-col bg-[#f5f0eb]/95 backdrop-blur-xl border border-black/10 rounded-xl overflow-hidden">
+        {/* Title Bar */}
+        <div
+          className="flex items-center h-12 bg-[#e8e0d8]/80 border-b border-black/5 cursor-default shrink-0"
+          style={{ padding: "0 20px" }}
+          onMouseDown={handleMouseDown}
+        >
+          <div className="flex items-center gap-2" style={{ marginLeft: "4px" }} onMouseDown={(e) => e.stopPropagation()}>
+            <button
+              onMouseDown={(e) => { e.stopPropagation(); e.preventDefault(); onClose(); }}
+              className="w-3 h-3 rounded-full bg-[#ff5f57] hover:bg-[#ff3b30] transition-colors shadow-inner flex items-center justify-center group cursor-pointer"
+            >
+              <svg className="w-1.5 h-1.5 opacity-0 group-hover:opacity-100 transition-opacity" viewBox="0 0 6 6" fill="none">
+                <path d="M1 1L5 5M5 1L1 5" stroke="#4a0000" strokeWidth="1.2" />
+              </svg>
+            </button>
+            <div className="w-3 h-3 rounded-full bg-[#febc2e] shadow-inner" />
+            <div className="w-3 h-3 rounded-full bg-[#28c840] shadow-inner" />
+          </div>
+
+          <div className="flex-1 flex items-center justify-center">
+            <span className="text-[13px] font-medium text-[#3d3329]/80 tracking-tight">
+              Information about: Sabiha, sabihaecemylmaz@gmail.com
+            </span>
+          </div>
+
+          <div className="w-[52px]" />
+        </div>
+
+        {/* Content */}
+        <div className="flex flex-1 overflow-hidden">
+          {/* Sidebar */}
+          <div className="w-[130px] bg-[#ebe5de]/60 border-r border-black/5 shrink-0" style={{ padding: "16px 0" }}>
+            {[
+              { id: "about" as const, label: "About me" },
+              { id: "skills" as const, label: "Skills" },
+              { id: "contact" as const, label: "Contact" },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`w-full text-left text-[13px] font-medium transition-colors ${
+                  activeTab === tab.id
+                    ? "bg-[#d4cbc2]/60 text-[#2c2419]"
+                    : "text-[#6b5d4f] hover:bg-[#d4cbc2]/30"
+                }`}
+                style={{ padding: "10px 20px" }}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Main Content */}
+          <div className="flex-1 overflow-auto" style={{ padding: "32px 36px" }}>
+            {activeTab === "about" && (
+              <div className="flex flex-col" style={{ gap: "20px" }}>
+                <p className="text-[15px] text-[#4a3f34] leading-[1.8]">
+                  Hi, I&apos;m Sabiha. Currently processing my journey as an AI &amp; Data Engineering student at Akdeniz University. I don&apos;t just love technology; I treat it as a dataset to be optimized. From architecting software pipelines to mapping UI/UX experiences, I blend analytical rigour with visual storytelling. I&apos;m driven by the goal of turning raw data into meaningful, creative outcomes that make a measurable difference.
+                </p>
+              </div>
+            )}
+
+            {activeTab === "skills" && (
+              <div className="flex flex-col" style={{ gap: "16px" }}>
+                <h3 className="text-[13px] font-bold text-[#6b5d4f] uppercase tracking-wider">
+                  I can do...
+                </h3>
+                <div className="flex flex-col" style={{ gap: "10px" }}>
+                  {skills.map((skill) => (
+                    <div key={skill} className="flex items-center gap-3">
+                      <div className="w-5 h-5 rounded-full bg-[#f5a623] flex items-center justify-center shrink-0">
+                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span className="text-[14px] text-[#4a3f34]">{skill}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === "contact" && (
+              <div className="flex flex-col" style={{ gap: "20px" }}>
+                <h3 className="text-[13px] font-bold text-[#6b5d4f] uppercase tracking-wider">
+                  Get in touch
+                </h3>
+                <div className="flex flex-col" style={{ gap: "14px" }}>
+                  <a
+                    href="mailto:sabihaecemylmaz@gmail.com"
+                    className="flex items-center gap-3 text-[14px] text-[#3478f6] hover:underline"
+                  >
+                    <span className="text-[16px]">📧</span>
+                    sabihaecemylmaz@gmail.com
+                  </a>
+                  <a
+                    href="https://www.instagram.com/heyiamsabi"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 text-[14px] text-[#3478f6] hover:underline"
+                  >
+                    <span className="text-[16px]">📸</span>
+                    @heyiamsabi
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
