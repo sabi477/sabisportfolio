@@ -7,7 +7,7 @@ import {
   useTransform,
   MotionValue,
 } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useLocale } from "@/i18n/useLocale";
 import type { TranslationKey } from "@/i18n/translations";
 
@@ -35,21 +35,37 @@ const SEPARATOR_AFTER = new Set(["spotify", "photos"]);
 
 const BASE = 50;
 const MAX = 78;
+const BASE_MOBILE = 40;
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    const set = () => setIsMobile(mq.matches);
+    set();
+    mq.addEventListener("change", set);
+    return () => mq.removeEventListener("change", set);
+  }, []);
+  return isMobile;
+}
 
 function DockIcon({
   item,
   mouseX,
   onAction,
   label,
+  isMobile,
 }: {
   item: DockItem;
   mouseX: MotionValue<number>;
   onAction?: (id: string) => void;
   label: string;
+  isMobile: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
   const distance = useTransform(mouseX, (val) => {
+    if (isMobile) return 300;
     const rect = ref.current?.getBoundingClientRect();
     if (!rect) return 300;
     return val - rect.x - rect.width / 2;
@@ -65,13 +81,19 @@ function DockIcon({
     { stiffness: 350, damping: 25, mass: 0.5 }
   );
 
+  const mobileSize = BASE_MOBILE;
+
   return (
     <motion.div
       ref={ref}
-      className="relative group"
-      style={{ width: size, height: size, y }}
+      className="relative group shrink-0"
+      style={
+        isMobile
+          ? { width: mobileSize, height: mobileSize }
+          : { width: size, height: size, y }
+      }
     >
-      <div className="absolute -top-9 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10">
+      <div className="absolute -top-9 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10 hidden md:block">
         <div className="bg-black/70 text-white text-[11px] font-medium px-2.5 py-1 rounded-md whitespace-nowrap backdrop-blur-xl">
           {label}
         </div>
@@ -79,7 +101,7 @@ function DockIcon({
       </div>
 
       <motion.div
-        className="w-full h-full cursor-pointer overflow-hidden rounded-[11px]"
+        className="w-full h-full cursor-pointer overflow-hidden rounded-[11px] touch-manipulation"
         whileTap={{ scale: 0.85 }}
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
         onClick={() => {
@@ -108,27 +130,33 @@ function DockIcon({
 export default function Dock({ onAction }: { onAction?: (id: string) => void }) {
   const { t } = useLocale();
   const mouseX = useMotionValue(Infinity);
+  const isMobile = useIsMobile();
 
   return (
     <motion.div
-      className="fixed bottom-2 left-1/2 -translate-x-1/2 z-[9999]"
+      className="fixed bottom-2 left-0 right-0 z-[9999] md:left-1/2 md:right-auto md:-translate-x-1/2 px-2 md:px-0 pb-safe"
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.5, type: "spring", stiffness: 200, damping: 20 }}
     >
       <div
-        className="flex items-end gap-[6px] rounded-2xl bg-white/10 backdrop-blur-2xl border border-white/15 shadow-[0_0_40px_rgba(0,0,0,0.25)]"
-        style={{ padding: "8px 12px" }}
+        className={`flex items-end gap-[6px] rounded-2xl bg-white/10 backdrop-blur-2xl border border-white/15 shadow-[0_0_40px_rgba(0,0,0,0.25)] overflow-x-auto overflow-y-hidden scrollbar-hide max-w-full md:max-w-none ${isMobile ? "justify-start" : "justify-center"}`}
+        style={{
+          padding: isMobile ? "6px 10px" : "8px 12px",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+          WebkitOverflowScrolling: "touch",
+        }}
         onMouseMove={(e) => mouseX.set(e.clientX)}
         onMouseLeave={() => mouseX.set(Infinity)}
       >
         {dockItems.map((item) => (
-          <div key={item.id} className="flex items-end gap-[6px]">
-            <DockIcon item={item} mouseX={mouseX} onAction={onAction} label={t(item.labelKey)} />
+          <div key={item.id} className="flex items-end gap-[6px] shrink-0">
+            <DockIcon item={item} mouseX={mouseX} onAction={onAction} label={t(item.labelKey)} isMobile={isMobile} />
             {SEPARATOR_AFTER.has(item.id) && (
               <div
-                className="w-px bg-white/20 rounded-full"
-                style={{ height: BASE * 0.65, marginBottom: 3 }}
+                className="w-px bg-white/20 rounded-full shrink-0 hidden md:block"
+                style={{ height: (isMobile ? BASE_MOBILE : BASE) * 0.65, marginBottom: 3 }}
               />
             )}
           </div>

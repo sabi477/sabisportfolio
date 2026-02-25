@@ -12,16 +12,22 @@ interface HelloWorldWindowProps {
 const TEXT = "hello world";
 const TYPING_DELAY_MS = 120;
 const CURSOR_BLINK_MS = 530;
+const WIDTH = 420;
+const HEIGHT = 240;
 
 export default function HelloWorldWindow({ onClose, zIndex, onFocus }: HelloWorldWindowProps) {
-  const [position, setPosition] = useState({
-    x: Math.max(50, (typeof window !== "undefined" ? window.innerWidth : 1200) / 2 - 200),
-    y: Math.max(50, (typeof window !== "undefined" ? window.innerHeight : 800) / 2 - 140),
-  });
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const [visibleLength, setVisibleLength] = useState(0);
   const [cursorOn, setCursorOn] = useState(true);
   const isDragging = useRef(false);
   const dragStart = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    setPosition({
+      x: Math.max(0, (window.innerWidth - WIDTH) / 2),
+      y: Math.max(0, (window.innerHeight - HEIGHT) / 2),
+    });
+  }, []);
 
   useEffect(() => {
     if (visibleLength >= TEXT.length) return;
@@ -61,7 +67,7 @@ export default function HelloWorldWindow({ onClose, zIndex, onFocus }: HelloWorl
         zIndex,
         left: position.x,
         top: position.y,
-        width: 420,
+        width: WIDTH,
         boxShadow: "0 16px 50px rgba(0,0,0,0.5), 0 0 1px rgba(0,0,0,0.3)",
       }}
       initial={{ scale: 0.5, opacity: 0 }}

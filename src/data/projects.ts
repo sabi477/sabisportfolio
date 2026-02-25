@@ -24,7 +24,7 @@ export const projects: Project[] = [
     description: "Second version of the travel agency website UI/UX. Cappadocia-themed hero, destinations and contact pages.",
     descriptionTr: "Seyahat acentesi web sitesinin ikinci versiyon UI/UX çalışması. Kapadokya temalı hero, destinasyonlar ve iletişim sayfaları.",
     previewColor: "#2d1b4e",
-    position: { x: 10, y: 10 },
+    position: { x: 8, y: 8 },
     iconImage: "/folderImages/folderImage1i.png",
     gallery: [
       "/Ekran Resmi 2026-02-25 06.42.47.png",
@@ -41,7 +41,7 @@ export const projects: Project[] = [
     description: "IEEE Antalya Student Branch club website built with Next.js. 3D visuals and modern UI components.",
     descriptionTr: "IEEE Antalya Öğrenci Kolu için Next.js ile geliştirilmiş kulüp web sitesi. 3D görseller ve modern UI bileşenleriyle tasarlandı.",
     previewColor: "#0a1628",
-    position: { x: 55, y: 8 },
+    position: { x: 64, y: 10 },
     iconImage: "/folderImages/folderImage2i.png",
     gallery: [
       "/Ekran Resmi 2026-02-25 06.16.32.png",
@@ -58,7 +58,7 @@ export const projects: Project[] = [
     description: "Modern website design and development for an investment and tech-focused company.",
     descriptionTr: "Yatırım ve teknoloji odaklı bir şirket için modern web sitesi tasarımı ve geliştirmesi.",
     previewColor: "#3b82f6",
-    position: { x: 25, y: 15 },
+    position: { x: 26, y: 18 },
     iconImage: "/folderImages/folderImage3i.png",
     gallery: [
       "/Ekran Resmi 2026-02-25 05.46.49.png",
@@ -75,7 +75,7 @@ export const projects: Project[] = [
     description: "Website UI/UX for an AC service company. We're in every sector!",
     descriptionTr: "Klima servisi firması için tasarlanmış web sitesi UI/UX çalışması. Her sektörde varız!",
     previewColor: "#f9a8d4",
-    position: { x: 40, y: 20 },
+    position: { x: 46, y: 15 },
     iconImage: "/folderImages/folderImage4i.png",
     gallery: [
       "/grafikdunyasi26.png",
@@ -90,7 +90,7 @@ export const projects: Project[] = [
     description: "TypeScript-based UI/UX redesign of an education platform website. A personal project made just for fun.",
     descriptionTr: "TypeScript ile geliştirilmiş, UI/UX odaklı bir eğitim platformu web sitesi redesign'ı. Tamamen eğlencesine yapılmış kişisel bir projedir.",
     previewColor: "#e53e3e",
-    position: { x: 70, y: 18 },
+    position: { x: 78, y: 16 },
     iconImage: "/folderImages/folderImage5i.png",
     gallery: [
       "/Ekran Resmi 2026-02-25 06.04.26.png",
@@ -107,7 +107,7 @@ export const projects: Project[] = [
     description: "Working on a mobile app... Coming soon!",
     descriptionTr: "Bir mobil uygulama üzerinde çalışıyorum... Çok yakında sizlerle!",
     previewColor: "#333333",
-    position: { x: 15, y: 32 },
+    position: { x: 12, y: 34 },
     iconImage: "/folderImages/folderImage6i.png",
     gallery: ["/mobile-app-preview.png"],
     comingSoon: true,
@@ -120,7 +120,7 @@ export const projects: Project[] = [
     description: "Even though I'm deep in tech, I can't let go of classical art. My oil and charcoal work reflects the creative side that lives outside the digital world.",
     descriptionTr: "Teknolojiyle iç içe olsam da sanatın klasik formlarından kopamıyorum. Yağlıboya ve karakalem çalışmalarım, dijital dünyanın dışında kalan yaratıcı yanımı yansıtıyor.",
     previewColor: "#6b3fa0",
-    position: { x: 35, y: 35 },
+    position: { x: 38, y: 30 },
     iconImage: "/folderImages/folderImage10i.png",
     gallery: [
       "/e684fbcf-78d4-46b4-bedb-c699fe977bb8.JPG",
@@ -138,7 +138,7 @@ export const projects: Project[] = [
     description: "My data engineering and analytics side. Database designs, ETL pipelines, Python scripts and ML experiments live here.",
     descriptionTr: "Veri mühendisliği ve analitik tarafım. Veritabanı tasarımları, ETL pipeline'ları, Python scriptleri ve makine öğrenmesi denemeleri burada.",
     previewColor: "#c6e6b3",
-    position: { x: 55, y: 32 },
+    position: { x: 58, y: 36 },
     iconImage: "/folderImages/folderImage8i.png",
     folderItems: [
       "database_projects",
@@ -157,7 +157,7 @@ export const projects: Project[] = [
     description: "I create app store visuals for App Store and Google Play. Eye-catching screenshots and promo designs that put the user experience first.",
     descriptionTr: "App Store ve Google Play için mobil uygulama mağaza görselleri oluşturuyorum. Kullanıcı deneyimini öne çıkaran, dikkat çekici ekran görüntüleri ve tanıtım tasarımları hazırlıyorum.",
     previewColor: "#f5d45e",
-    position: { x: 75, y: 35 },
+    position: { x: 76, y: 32 },
     iconImage: "/folderImages/folderImage9i.png",
     gallery: [
       "/Untitled design-31.png",
@@ -174,7 +174,7 @@ export const projects: Project[] = [
     description: "Social media designs, branding guide and logo work for BİLMÖK (Computer Engineering Student Congress).",
     descriptionTr: "BİLMÖK (Bilgisayar Mühendisliği Öğrenci Kongresi) için sosyal medya tasarımları, branding guide ve logo çalışmaları.",
     previewColor: "#e8d5b7",
-    position: { x: 25, y: 50 },
+    position: { x: 18, y: 52 },
     iconImage: "/folderImages/folderImage7i.png",
     gallery: [
       "/BİLMÖK SOCİAL MEDİA REFERENCES.png",
@@ -191,7 +191,7 @@ export const projects: Project[] = [
     description: "Searching for a sign? This is it! You found the right file and maybe your next favorite partner. Don't be shy, drop a message and let's see what happens.",
     descriptionTr: "Bir işaret mi arıyordun? İşte bu! Doğru dosyayı buldun ve belki de bir sonraki favori ortağını. Çekinme, bir mesaj bırak ve neler olacağına bakalım.",
     previewColor: "#8b6914",
-    position: { x: 50, y: 48 },
+    position: { x: 48, y: 50 },
     iconImage: "/folderImages/folderImage11i.png",
     link: "mailto:sabihaecemylmaz@gmail.com",
   },
@@ -203,7 +203,7 @@ export const projects: Project[] = [
     description: "Website UI/UX for a travel agency. Rich experience with destinations, gallery and FAQ sections.",
     descriptionTr: "Seyahat acentesi için tasarlanmış web sitesi UI/UX çalışması. Destinasyonlar, galeri ve SSS bölümleriyle zengin bir kullanıcı deneyimi.",
     previewColor: "#cc0000",
-    position: { x: 70, y: 50 },
+    position: { x: 64, y: 56 },
     iconImage: "/folderImages/folderImage12i.png",
     gallery: [
       "/new version.png",

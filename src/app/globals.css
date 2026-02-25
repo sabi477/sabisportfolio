@@ -21,6 +21,7 @@ body {
   font-family: var(--font-inter), "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  touch-action: manipulation; /* pinch-zoom engellemek için */
 }
 
 ::selection {
@@ -40,4 +41,21 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.35);
+}
+
+/* Mobil dock kaydırma çubuğunu gizle */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Safe area (çentikli ekranlar) */
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0);
+}
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 8px);
 }

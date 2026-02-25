@@ -1,8 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useRef, useCallback, useState } from "react";
+import { useRef, useCallback, useState, useEffect } from "react";
 import { useLocale } from "@/i18n/useLocale";
+
+const WIDTH = 380;
+const HEIGHT = 200;
 
 interface FigmaPopupProps {
   onClose: () => void;
@@ -12,12 +15,16 @@ interface FigmaPopupProps {
 
 export default function FigmaPopup({ onClose, zIndex, onFocus }: FigmaPopupProps) {
   const { t } = useLocale();
-  const [position, setPosition] = useState({
-    x: Math.max(50, (typeof window !== "undefined" ? window.innerWidth : 1200) / 2 - 230),
-    y: Math.max(50, (typeof window !== "undefined" ? window.innerHeight : 800) / 2 - 100),
-  });
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const isDragging = useRef(false);
   const dragStart = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    setPosition({
+      x: Math.max(0, (window.innerWidth - WIDTH) / 2),
+      y: Math.max(0, (window.innerHeight - HEIGHT) / 2),
+    });
+  }, []);
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
@@ -46,7 +53,7 @@ export default function FigmaPopup({ onClose, zIndex, onFocus }: FigmaPopupProps
         zIndex,
         left: position.x,
         top: position.y,
-        width: 380,
+        width: WIDTH,
         boxShadow: "0 16px 50px rgba(0,0,0,0.5), 0 0 1px rgba(0,0,0,0.3)",
       }}
       initial={{ scale: 0.5, opacity: 0 }}

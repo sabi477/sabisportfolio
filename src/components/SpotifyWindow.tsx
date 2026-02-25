@@ -1,9 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useLocale } from "@/i18n/useLocale";
 import type { TranslationKey } from "@/i18n/translations";
+
+const WIDTH = 820;
+const HEIGHT = 580;
 
 interface SpotifyWindowProps {
   onClose: () => void;
@@ -39,12 +42,16 @@ export default function SpotifyWindow({
   onFocus,
 }: SpotifyWindowProps) {
   const { t } = useLocale();
-  const [position, setPosition] = useState({
-    x: Math.max(50, (typeof window !== "undefined" ? window.innerWidth : 1200) / 2 - 400),
-    y: Math.max(30, (typeof window !== "undefined" ? window.innerHeight : 800) / 2 - 300),
-  });
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const isDragging = useRef(false);
   const dragStart = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    setPosition({
+      x: Math.max(0, (window.innerWidth - WIDTH) / 2),
+      y: Math.max(0, (window.innerHeight - HEIGHT) / 2),
+    });
+  }, []);
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
@@ -79,8 +86,8 @@ export default function SpotifyWindow({
         zIndex,
         left: position.x,
         top: position.y,
-        width: 820,
-        height: 580,
+        width: WIDTH,
+        height: HEIGHT,
         boxShadow: "0 16px 50px rgba(0,0,0,0.5), 0 0 1px rgba(0,0,0,0.2)",
       }}
       initial={{ scale: 0.5, opacity: 0 }}

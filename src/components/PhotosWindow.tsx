@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useLocale } from "@/i18n/useLocale";
 
 interface PhotosWindowProps {
@@ -9,6 +9,10 @@ interface PhotosWindowProps {
   zIndex: number;
   onFocus: () => void;
 }
+
+const MAX_WIDTH = 600;
+const MAX_HEIGHT = 520;
+const PADDING = 24;
 
 const photos = [
   "/IMG_9444.jpeg",
@@ -18,15 +22,34 @@ const photos = [
   "/IMG_7307.jpg",
 ];
 
+function getPhotosSize() {
+  if (typeof window === "undefined") return { width: MAX_WIDTH, height: MAX_HEIGHT };
+  const w = Math.min(MAX_WIDTH, window.innerWidth - PADDING);
+  const h = Math.min(MAX_HEIGHT, window.innerHeight - PADDING);
+  return { width: w, height: h };
+}
+
 export default function PhotosWindow({ onClose, zIndex, onFocus }: PhotosWindowProps) {
   const { t } = useLocale();
-  const [position, setPosition] = useState({
-    x: Math.max(50, (typeof window !== "undefined" ? window.innerWidth : 1200) / 2 - 300),
-    y: Math.max(30, (typeof window !== "undefined" ? window.innerHeight : 800) / 2 - 260),
-  });
+  const [size, setSize] = useState(getPhotosSize);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const [selected, setSelected] = useState<number | null>(null);
   const isDragging = useRef(false);
   const dragStart = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const update = () => {
+      const s = getPhotosSize();
+      setSize(s);
+      setPosition({
+        x: Math.max(0, (window.innerWidth - s.width) / 2),
+        y: Math.max(0, (window.innerHeight - s.height) / 2),
+      });
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
@@ -55,8 +78,8 @@ export default function PhotosWindow({ onClose, zIndex, onFocus }: PhotosWindowP
         zIndex,
         left: position.x,
         top: position.y,
-        width: 600,
-        height: 520,
+        width: size.width,
+        height: size.height,
         boxShadow: "0 12px 40px rgba(0,0,0,0.25), 0 0 1px rgba(0,0,0,0.1)",
       }}
       initial={{ scale: 0.5, opacity: 0 }}

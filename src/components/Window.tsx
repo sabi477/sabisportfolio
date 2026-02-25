@@ -23,17 +23,51 @@ export default function Window({
   const [isMinimized, setIsMinimized] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const size = { width: 620, height: 560 };
+  const [size, setSize] = useState({ width: 620, height: 560 });
   const isDragging = useRef(false);
   const dragStart = useRef({ x: 0, y: 0 });
 
+  const clampPosition = useCallback(
+    (x: number, y: number) => {
+      const padding = 8;
+      const maxX = Math.max(0, window.innerWidth - size.width - padding);
+      const maxY = Math.max(0, window.innerHeight - size.height - padding);
+      return {
+        x: Math.max(padding, Math.min(maxX, x)),
+        y: Math.max(padding, Math.min(maxY, y)),
+      };
+    },
+    [size.width, size.height]
+  );
+
   useEffect(() => {
-    const offsetX = Math.random() * 200 - 100;
-    const offsetY = Math.random() * 100 - 50;
-    setPosition({
-      x: Math.max(50, (window.innerWidth - size.width) / 2 + offsetX),
-      y: Math.max(50, (window.innerHeight - size.height) / 2 + offsetY),
-    });
+    const updateSize = () => {
+      const isMobile = window.innerWidth < 768;
+      if (isMobile) {
+        const w = Math.min(window.innerWidth - 16, 620);
+        const h = Math.min(window.innerHeight * 0.85, 560);
+        setSize({ width: w, height: h });
+      } else {
+        setSize({ width: 620, height: 560 });
+      }
+    };
+    updateSize();
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
+
+  useEffect(() => {
+    const syncBounds = () => {
+      setPosition((prev) => clampPosition(prev.x, prev.y));
+    };
+    window.addEventListener("resize", syncBounds);
+    return () => window.removeEventListener("resize", syncBounds);
+  }, [clampPosition]);
+
+  useEffect(() => {
+    const x = Math.max(0, (window.innerWidth - size.width) / 2);
+    const y = Math.max(0, (window.innerHeight - size.height) / 2);
+    setPosition({ x, y });
   }, [size.width, size.height]);
 
   const handleMouseDown = useCallback(
@@ -48,10 +82,11 @@ export default function Window({
 
       const handleMouseMove = (e: MouseEvent) => {
         if (!isDragging.current) return;
-        setPosition({
-          x: e.clientX - dragStart.current.x,
-          y: Math.max(0, e.clientY - dragStart.current.y),
-        });
+        const next = clampPosition(
+          e.clientX - dragStart.current.x,
+          e.clientY - dragStart.current.y
+        );
+        setPosition(next);
       };
 
       const handleMouseUp = () => {
@@ -63,7 +98,42 @@ export default function Window({
       window.addEventListener("mousemove", handleMouseMove);
       window.addEventListener("mouseup", handleMouseUp);
     },
-    [isMaximized, position, onFocus]
+    [isMaximized, position, onFocus, clampPosition]
+  );
+
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      if (isMaximized) return;
+      const touch = e.touches[0];
+      if (!touch) return;
+      isDragging.current = true;
+      dragStart.current = {
+        x: touch.clientX - position.x,
+        y: touch.clientY - position.y,
+      };
+      onFocus();
+
+      const handleTouchMove = (e: TouchEvent) => {
+        if (!isDragging.current || !e.touches[0]) return;
+        e.preventDefault();
+        const t = e.touches[0];
+        const next = clampPosition(
+          t.clientX - dragStart.current.x,
+          t.clientY - dragStart.current.y
+        );
+        setPosition(next);
+      };
+
+      const handleTouchEnd = () => {
+        isDragging.current = false;
+        window.removeEventListener("touchmove", handleTouchMove, { capture: true });
+        window.removeEventListener("touchend", handleTouchEnd);
+      };
+
+      window.addEventListener("touchmove", handleTouchMove, { passive: false, capture: true });
+      window.addEventListener("touchend", handleTouchEnd);
+    },
+    [isMaximized, position, onFocus, clampPosition]
   );
 
   const handleClose = useCallback(
@@ -115,15 +185,16 @@ export default function Window({
           <div className="w-full h-full flex flex-col bg-[#f5f0eb]/95 backdrop-blur-xl border border-black/10 rounded-xl overflow-hidden">
             {/* Title Bar */}
             <div
-              className="flex items-center h-12 bg-[#e8e0d8]/80 border-b border-black/5 cursor-default shrink-0"
-              style={{ paddingLeft: "16px", paddingRight: "16px" }}
+              className="flex items-center h-12 bg-[#e8e0d8]/80 border-b border-black/5 cursor-default shrink-0 min-h-12 touch-none"
+              style={{ paddingLeft: "12px", paddingRight: "12px" }}
               onMouseDown={handleMouseDown}
+              onTouchStart={handleTouchStart}
             >
               {/* Traffic Lights */}
-              <div className="flex items-center gap-2" style={{ marginLeft: "12px", marginRight: "16px" }} onMouseDown={(e) => e.stopPropagation()}>
+              <div className="flex items-center gap-2 shrink-0 md:ml-1 md:mr-4" onMouseDown={(e) => e.stopPropagation()}>
                 <button
                   onMouseDown={handleClose}
-                  className="w-3 h-3 rounded-full bg-[#ff5f57] hover:bg-[#ff3b30] transition-colors shadow-inner flex items-center justify-center group cursor-pointer"
+                  className="w-3 h-3 rounded-full bg-[#ff5f57] hover:bg-[#ff3b30] transition-colors shadow-inner flex items-center justify-center group cursor-pointer touch-manipulation"
                 >
                   <svg className="w-1.5 h-1.5 opacity-0 group-hover:opacity-100 transition-opacity" viewBox="0 0 6 6" fill="none">
                     <path d="M1 1L5 5M5 1L1 5" stroke="#4a0000" strokeWidth="1.2" />
@@ -133,19 +204,19 @@ export default function Window({
                 <div className="w-3 h-3 rounded-full bg-[#28c840] shadow-inner" />
               </div>
 
-              <div className="flex-1 flex items-center justify-center gap-2">
-                <span className="text-[13px] font-medium text-[#3d3329]/80 tracking-tight">
+              <div className="flex-1 flex items-center justify-center gap-2 min-w-0 px-1">
+                <span className="text-[12px] md:text-[13px] font-medium text-[#3d3329]/80 tracking-tight truncate">
                   {t("informationAbout")} {locale === "tr" && project.nameTr ? project.nameTr : project.name}
                 </span>
               </div>
 
-              <div className="w-[52px]" />
+              <div className="w-2 md:w-[52px] shrink-0" />
             </div>
 
             {/* Window Content */}
             <div
               className="flex-1 overflow-auto"
-              style={{ padding: "32px 40px" }}
+              style={{ padding: "clamp(16px, 4vw, 32px) clamp(20px, 5vw, 40px)" }}
             >
               <div className="flex flex-col" style={{ gap: "24px" }}>
                 {/* Project Header */}

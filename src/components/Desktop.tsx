@@ -2,9 +2,11 @@
 
 import { useState, useCallback } from "react";
 import { AnimatePresence } from "framer-motion";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import DesktopIcon from "./DesktopIcon";
 import Window from "./Window";
 import SpotifyWindow from "./SpotifyWindow";
+import SpotifyWidget from "./SpotifyWidget";
 import ErrorPopup from "./ErrorPopup";
 import FigmaPopup from "./FigmaPopup";
 import HelloWorldWindow from "./HelloWorldWindow";
@@ -20,6 +22,7 @@ interface OpenWindow {
 }
 
 export default function Desktop() {
+  const isMobile = useIsMobile();
   const [openWindows, setOpenWindows] = useState<OpenWindow[]>([]);
   const [topZIndex, setTopZIndex] = useState(100);
   const [showSpotify, setShowSpotify] = useState(false);
@@ -171,7 +174,7 @@ export default function Desktop() {
       <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20" />
 
       {/* Desktop Icons Area */}
-      <div id="desktop-area" className="absolute inset-0 pb-20">
+      <div id="desktop-area" className="absolute inset-0 pb-24 md:pb-20 pt-safe">
         {projects.map((project) => (
           <DesktopIcon
             key={project.id}
@@ -196,14 +199,22 @@ export default function Desktop() {
 
       {/* Spotify Window */}
       <AnimatePresence>
-        {showSpotify && (
-          <SpotifyWindow
-            key="spotify"
-            zIndex={spotifyZ}
-            onClose={() => setShowSpotify(false)}
-            onFocus={handleFocusSpotify}
-          />
-        )}
+        {showSpotify &&
+          (isMobile ? (
+            <SpotifyWidget
+              key="spotify-widget"
+              zIndex={spotifyZ}
+              onClose={() => setShowSpotify(false)}
+              onFocus={handleFocusSpotify}
+            />
+          ) : (
+            <SpotifyWindow
+              key="spotify"
+              zIndex={spotifyZ}
+              onClose={() => setShowSpotify(false)}
+              onFocus={handleFocusSpotify}
+            />
+          ))}
       </AnimatePresence>
 
       {/* Error Popup */}
