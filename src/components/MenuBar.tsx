@@ -1,22 +1,25 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useLocale } from "@/i18n/useLocale";
 
 export default function MenuBar() {
+  const { locale, t } = useLocale();
   const [time, setTime] = useState("");
   const [date, setDate] = useState("");
+  const localeTag = locale === "tr" ? "tr-TR" : "en-US";
 
   useEffect(() => {
     const update = () => {
       const now = new Date();
       setTime(
-        now.toLocaleTimeString("tr-TR", {
+        now.toLocaleTimeString(localeTag, {
           hour: "2-digit",
           minute: "2-digit",
         })
       );
       setDate(
-        now.toLocaleDateString("tr-TR", {
+        now.toLocaleDateString(localeTag, {
           day: "numeric",
           month: "short",
           weekday: "short",
@@ -26,19 +29,19 @@ export default function MenuBar() {
     update();
     const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [localeTag]);
 
   const leftItems = [
     { label: "", isApple: true },
     { label: "Safari", bold: true },
-    { label: "Dosya" },
-    { label: "Düzen" },
-    { label: "Görüntü" },
-    { label: "Geçmiş" },
-    { label: "Yer İşaretleri" },
-    { label: "Geliştirme" },
-    { label: "Pencere" },
-    { label: "Yardım" },
+    { label: t("menuFile") },
+    { label: t("menuEdit") },
+    { label: t("menuView") },
+    { label: t("menuHistory") },
+    { label: t("menuBookmarks") },
+    { label: t("menuDevelopment") },
+    { label: t("menuWindow") },
+    { label: t("menuHelp") },
   ];
 
   return (

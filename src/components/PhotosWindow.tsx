@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState, useRef, useCallback } from "react";
+import { useLocale } from "@/i18n/useLocale";
 
 interface PhotosWindowProps {
   onClose: () => void;
@@ -18,6 +19,7 @@ const photos = [
 ];
 
 export default function PhotosWindow({ onClose, zIndex, onFocus }: PhotosWindowProps) {
+  const { t } = useLocale();
   const [position, setPosition] = useState({
     x: Math.max(50, (typeof window !== "undefined" ? window.innerWidth : 1200) / 2 - 300),
     y: Math.max(30, (typeof window !== "undefined" ? window.innerHeight : 800) / 2 - 260),
@@ -85,7 +87,7 @@ export default function PhotosWindow({ onClose, zIndex, onFocus }: PhotosWindowP
 
           <div className="flex-1 flex items-center justify-center">
             <span className="text-[13px] font-medium text-white/60 tracking-tight">
-              Photos
+              {t("photos")}
             </span>
           </div>
 
@@ -110,7 +112,7 @@ export default function PhotosWindow({ onClose, zIndex, onFocus }: PhotosWindowP
                 className="text-[12px] text-white/50 hover:text-white/80 transition-colors"
                 style={{ padding: "6px 16px" }}
               >
-                ← Tüm Fotoğraflar
+                {t("allPhotos")}
               </button>
             </div>
           ) : (

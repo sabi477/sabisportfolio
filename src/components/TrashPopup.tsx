@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useRef, useCallback, useState } from "react";
+import { useLocale } from "@/i18n/useLocale";
 
 interface TrashPopupProps {
   onClose: () => void;
@@ -10,6 +11,7 @@ interface TrashPopupProps {
 }
 
 export default function TrashPopup({ onClose, zIndex, onFocus }: TrashPopupProps) {
+  const { t } = useLocale();
   const [position, setPosition] = useState({
     x: Math.max(50, (typeof window !== "undefined" ? window.innerWidth : 1200) / 2 - 190),
     y: Math.max(50, (typeof window !== "undefined" ? window.innerHeight : 800) / 2 - 120),
@@ -58,15 +60,15 @@ export default function TrashPopup({ onClose, zIndex, onFocus }: TrashPopupProps
           className="h-9 bg-[#3a3a3a] flex items-center justify-center cursor-default border-b border-white/[0.06]"
           onMouseDown={handleMouseDown}
         >
-          <span className="text-[13px] font-medium text-white/70">Trash</span>
+          <span className="text-[13px] font-medium text-white/70">{t("trash")}</span>
         </div>
 
         <div className="flex items-start gap-5" style={{ padding: "24px 28px 20px" }}>
           <div className="shrink-0 text-3xl">🗑️</div>
           <div className="flex-1">
             <p className="text-[15px] leading-relaxed text-white/90">
-              Hey! Buraya bakmaman gerekiyordu...<br />
-              Burada sadece kötü fikirlerim ve yarım kalmış taslaklarım var.
+              {t("trashMessage1")}<br />
+              {t("trashMessage2")}
             </p>
           </div>
         </div>
@@ -77,7 +79,7 @@ export default function TrashPopup({ onClose, zIndex, onFocus }: TrashPopupProps
             className="bg-[#4a4a4a] hover:bg-[#5a5a5a] text-white text-[13px] font-medium rounded-md transition-colors"
             style={{ padding: "10px 24px" }}
           >
-            Tamam, görmedim 👀
+            {t("trashButton")}
           </button>
         </div>
       </div>

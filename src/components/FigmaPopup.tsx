@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useRef, useCallback, useState } from "react";
+import { useLocale } from "@/i18n/useLocale";
 
 interface FigmaPopupProps {
   onClose: () => void;
@@ -10,6 +11,7 @@ interface FigmaPopupProps {
 }
 
 export default function FigmaPopup({ onClose, zIndex, onFocus }: FigmaPopupProps) {
+  const { t } = useLocale();
   const [position, setPosition] = useState({
     x: Math.max(50, (typeof window !== "undefined" ? window.innerWidth : 1200) / 2 - 230),
     y: Math.max(50, (typeof window !== "undefined" ? window.innerHeight : 800) / 2 - 100),
@@ -58,7 +60,7 @@ export default function FigmaPopup({ onClose, zIndex, onFocus }: FigmaPopupProps
           className="h-9 bg-[#3a3a3a] flex items-center justify-center cursor-default border-b border-white/[0.06]"
           onMouseDown={handleMouseDown}
         >
-          <span className="text-[13px] font-medium text-white/70">Figma</span>
+          <span className="text-[13px] font-medium text-white/70">{t("figma")}</span>
         </div>
 
         <div className="flex items-start gap-5" style={{ padding: "20px 24px 16px" }}>
@@ -73,7 +75,7 @@ export default function FigmaPopup({ onClose, zIndex, onFocus }: FigmaPopupProps
 
           <div className="flex-1">
             <p className="text-[15px] leading-relaxed text-white/90">
-              Oops! We&apos;re probably building something amazing here. Come back later.
+              {t("figmaMessage")}
             </p>
           </div>
         </div>
@@ -84,7 +86,7 @@ export default function FigmaPopup({ onClose, zIndex, onFocus }: FigmaPopupProps
             className="bg-[#4a5ebd] hover:bg-[#5a6ecd] text-white text-[13px] font-medium rounded-md transition-colors"
             style={{ padding: "10px 24px" }}
           >
-            Ok
+            {t("ok")}
           </button>
         </div>
       </div>

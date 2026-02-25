@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useRef, useCallback, useState } from "react";
+import { useLocale } from "@/i18n/useLocale";
 
 interface ErrorPopupProps {
   onClose: () => void;
@@ -10,6 +11,7 @@ interface ErrorPopupProps {
 }
 
 export default function ErrorPopup({ onClose, zIndex, onFocus }: ErrorPopupProps) {
+  const { t } = useLocale();
   const [position, setPosition] = useState({
     x: Math.max(50, (typeof window !== "undefined" ? window.innerWidth : 1200) / 2 - 230),
     y: Math.max(50, (typeof window !== "undefined" ? window.innerHeight : 800) / 2 - 100),
@@ -59,7 +61,7 @@ export default function ErrorPopup({ onClose, zIndex, onFocus }: ErrorPopupProps
           className="h-9 bg-[#3a3a3a] flex items-center justify-center cursor-default border-b border-white/[0.06]"
           onMouseDown={handleMouseDown}
         >
-          <span className="text-[13px] font-medium text-white/70">Error</span>
+          <span className="text-[13px] font-medium text-white/70">{t("error")}</span>
         </div>
 
         {/* Content */}
@@ -76,8 +78,8 @@ export default function ErrorPopup({ onClose, zIndex, onFocus }: ErrorPopupProps
 
           <div className="flex-1">
             <p className="text-[15px] leading-relaxed text-white/90">
-              Sabi just lost her mind.<br />
-              Shame she didn&apos;t have a hard drive copy.
+              {t("errorMessage1")}<br />
+              {t("errorMessage2")}
             </p>
           </div>
         </div>
@@ -89,7 +91,7 @@ export default function ErrorPopup({ onClose, zIndex, onFocus }: ErrorPopupProps
             className="bg-[#4a5ebd] hover:bg-[#5a6ecd] text-white text-[13px] font-medium rounded-md transition-colors"
             style={{ padding: "10px 24px" }}
           >
-            Give up and go cry
+            {t("errorButton")}
           </button>
         </div>
       </div>

@@ -8,25 +8,27 @@ import {
   MotionValue,
 } from "framer-motion";
 import { useRef } from "react";
+import { useLocale } from "@/i18n/useLocale";
+import type { TranslationKey } from "@/i18n/translations";
 
 interface DockItem {
   id: string;
-  label: string;
+  labelKey: TranslationKey;
   iconSrc: string;
   imgScale: number;
   href?: string;
 }
 
 const dockItems: DockItem[] = [
-  { id: "app", label: "Portfolio", iconSrc: "/app-icon.png", imgScale: 1.0 },
-  { id: "figma", label: "Figma", iconSrc: "/figma-icon.webp", imgScale: 1.5 },
-  { id: "spotify", label: "Spotify", iconSrc: "/spoti-icon.png", imgScale: 1.05 },
-  { id: "error", label: "Alerts", iconSrc: "/error-icon.webp", imgScale: 1.0 },
-  { id: "notes", label: "Notes", iconSrc: "/note-icon.webp", imgScale: 1.0 },
-  { id: "photos", label: "Photos", iconSrc: "/photos-icon.webp", imgScale: 1.0 },
-  { id: "instagram", label: "Instagram", iconSrc: "/insta-icon.webp", imgScale: 1.0, href: "https://www.instagram.com/heyiamsabi?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" },
-  { id: "mail", label: "Mail", iconSrc: "/mail-icon.webp", imgScale: 1.0, href: "mailto:sabihaecemylmaz@gmail.com" },
-  { id: "trash", label: "Trash", iconSrc: "/bin-icon.webp", imgScale: 0.9 },
+  { id: "app", labelKey: "dockPortfolio", iconSrc: "/app-icon.png", imgScale: 1.0 },
+  { id: "figma", labelKey: "dockFigma", iconSrc: "/figma-icon.webp", imgScale: 1.5 },
+  { id: "spotify", labelKey: "dockSpotify", iconSrc: "/spoti-icon.png", imgScale: 1.05 },
+  { id: "error", labelKey: "dockAlerts", iconSrc: "/error-icon.webp", imgScale: 1.0 },
+  { id: "notes", labelKey: "dockNotes", iconSrc: "/note-icon.webp", imgScale: 1.0 },
+  { id: "photos", labelKey: "dockPhotos", iconSrc: "/photos-icon.webp", imgScale: 1.0 },
+  { id: "instagram", labelKey: "dockInstagram", iconSrc: "/insta-icon.webp", imgScale: 1.0, href: "https://www.instagram.com/heyiamsabi?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" },
+  { id: "mail", labelKey: "dockMail", iconSrc: "/mail-icon.webp", imgScale: 1.0, href: "mailto:sabihaecemylmaz@gmail.com" },
+  { id: "trash", labelKey: "dockTrash", iconSrc: "/bin-icon.webp", imgScale: 0.9 },
 ];
 
 const SEPARATOR_AFTER = new Set(["spotify", "photos"]);
@@ -38,10 +40,12 @@ function DockIcon({
   item,
   mouseX,
   onAction,
+  label,
 }: {
   item: DockItem;
   mouseX: MotionValue<number>;
   onAction?: (id: string) => void;
+  label: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -69,7 +73,7 @@ function DockIcon({
     >
       <div className="absolute -top-9 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10">
         <div className="bg-black/70 text-white text-[11px] font-medium px-2.5 py-1 rounded-md whitespace-nowrap backdrop-blur-xl">
-          {item.label}
+          {label}
         </div>
         <div className="w-2 h-2 bg-black/70 rotate-45 mx-auto -mt-1" />
       </div>
@@ -86,7 +90,7 @@ function DockIcon({
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={item.iconSrc}
-          alt={item.label}
+          alt={label}
           draggable={false}
           className="drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)]"
           style={{
@@ -102,6 +106,7 @@ function DockIcon({
 }
 
 export default function Dock({ onAction }: { onAction?: (id: string) => void }) {
+  const { t } = useLocale();
   const mouseX = useMotionValue(Infinity);
 
   return (
@@ -119,7 +124,7 @@ export default function Dock({ onAction }: { onAction?: (id: string) => void }) 
       >
         {dockItems.map((item) => (
           <div key={item.id} className="flex items-end gap-[6px]">
-            <DockIcon item={item} mouseX={mouseX} onAction={onAction} />
+            <DockIcon item={item} mouseX={mouseX} onAction={onAction} label={t(item.labelKey)} />
             {SEPARATOR_AFTER.has(item.id) && (
               <div
                 className="w-px bg-white/20 rounded-full"

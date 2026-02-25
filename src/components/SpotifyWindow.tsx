@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion";
 import { useState, useRef, useCallback } from "react";
+import { useLocale } from "@/i18n/useLocale";
+import type { TranslationKey } from "@/i18n/translations";
 
 interface SpotifyWindowProps {
   onClose: () => void;
@@ -9,15 +11,15 @@ interface SpotifyWindowProps {
   onFocus: () => void;
 }
 
-const playlists = [
+const playlists: { name?: string; nameKey?: TranslationKey; bg: string; hasImg: boolean }[] = [
   { name: "Deadbeat", bg: "linear-gradient(135deg, #2a2a2a 0%, #4a4a4a 100%)", hasImg: true },
   { name: "Daily Mix 3", bg: "linear-gradient(135deg, #8b3a3a 0%, #c45c3a 100%)", hasImg: true },
   { name: "Hamilton (Original...)", bg: "linear-gradient(135deg, #2a1a0a 0%, #4a3a1a 100%)", hasImg: true },
-  { name: "Beğenilen Şarkılar", bg: "linear-gradient(135deg, #5b4a9e 0%, #3a7bd5 100%)", hasImg: true },
+  { nameKey: "spotifyLikedSongs", bg: "linear-gradient(135deg, #5b4a9e 0%, #3a7bd5 100%)", hasImg: true },
   { name: "Daily Mix 1", bg: "linear-gradient(135deg, #1a3a1a 0%, #2a5a2a 100%)", hasImg: true },
-  { name: "Türkçe pop 2000'ler...", bg: "linear-gradient(135deg, #5a2a4a 0%, #8a3a5a 100%)", hasImg: true },
-  { name: "Çölde Bahar", bg: "linear-gradient(135deg, #4a3a2a 0%, #6a5a3a 100%)", hasImg: true },
-  { name: "Canozan", bg: "linear-gradient(135deg, #6a2a1a 0%, #9a4a2a 100%)", hasImg: true },
+  { nameKey: "spotifyTurkishPop", bg: "linear-gradient(135deg, #5a2a4a 0%, #8a3a5a 100%)", hasImg: true },
+  { nameKey: "spotifySpringInDesert", bg: "linear-gradient(135deg, #4a3a2a 0%, #6a5a3a 100%)", hasImg: true },
+  { nameKey: "spotifyCanozan", bg: "linear-gradient(135deg, #6a2a1a 0%, #9a4a2a 100%)", hasImg: true },
 ];
 
 const sidebarAlbums = [
@@ -36,6 +38,7 @@ export default function SpotifyWindow({
   zIndex,
   onFocus,
 }: SpotifyWindowProps) {
+  const { t } = useLocale();
   const [position, setPosition] = useState({
     x: Math.max(50, (typeof window !== "undefined" ? window.innerWidth : 1200) / 2 - 400),
     y: Math.max(30, (typeof window !== "undefined" ? window.innerHeight : 800) / 2 - 300),
@@ -181,25 +184,25 @@ export default function SpotifyWindow({
           <div className="flex-1 overflow-auto" style={{ padding: "20px 24px" }}>
             {/* Filter Tabs */}
             <div className="flex gap-2.5 mb-5">
-              <div className="px-4 py-1.5 rounded-full bg-white text-black text-[13px] font-semibold">Tümü</div>
-              <div className="px-4 py-1.5 rounded-full bg-white/[0.07] text-white/80 text-[13px] font-medium hover:bg-white/10 transition-colors">Müzik</div>
-              <div className="px-4 py-1.5 rounded-full bg-white/[0.07] text-white/80 text-[13px] font-medium hover:bg-white/10 transition-colors">Podcast&apos;ler</div>
+              <div className="px-4 py-1.5 rounded-full bg-white text-black text-[13px] font-semibold">{t("spotifyAll")}</div>
+              <div className="px-4 py-1.5 rounded-full bg-white/[0.07] text-white/80 text-[13px] font-medium hover:bg-white/10 transition-colors">{t("spotifyMusic")}</div>
+              <div className="px-4 py-1.5 rounded-full bg-white/[0.07] text-white/80 text-[13px] font-medium hover:bg-white/10 transition-colors">{t("spotifyPodcasts")}</div>
             </div>
 
             {/* Playlist Grid */}
             <div className="grid grid-cols-2 gap-2.5 mb-6">
-              {playlists.map((pl) => (
-                <div key={pl.name} className="flex items-center bg-white/[0.05] hover:bg-white/[0.1] rounded-[4px] transition-colors h-[52px] overflow-hidden cursor-pointer">
+              {playlists.map((pl, i) => (
+                <div key={pl.nameKey ?? pl.name ?? i} className="flex items-center bg-white/[0.05] hover:bg-white/[0.1] rounded-[4px] transition-colors h-[52px] overflow-hidden cursor-pointer">
                   <div className="w-[52px] h-[52px] shrink-0 rounded-l-[4px] overflow-hidden" style={{ background: pl.bg }} />
-                  <span className="text-[13px] font-semibold text-white/90 truncate px-4">{pl.name}</span>
+                  <span className="text-[13px] font-semibold text-white/90 truncate px-4">{pl.nameKey ? t(pl.nameKey) : pl.name}</span>
                 </div>
               ))}
             </div>
 
             {/* Section */}
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-[20px] font-bold tracking-tight">Sabi İçin Derlendi</h2>
-              <span className="text-[12px] text-white/50 font-semibold hover:underline cursor-pointer">Tümünü göster</span>
+              <h2 className="text-[20px] font-bold tracking-tight">{t("spotifyMadeFor")}</h2>
+              <span className="text-[12px] text-white/50 font-semibold hover:underline cursor-pointer">{t("spotifyShowAll")}</span>
             </div>
             <div className="flex gap-4">
               {[
@@ -264,7 +267,7 @@ export default function SpotifyWindow({
             </div>
             <p className="text-[12px] text-white/50 mb-6 leading-relaxed">Thayne Jasperson, Lin-Manuel Miran...</p>
             <div className="border-t border-white/[0.06] pt-4">
-              <span className="text-[13px] font-semibold text-white/40">Sanatçı hakkında</span>
+              <span className="text-[13px] font-semibold text-white/40">{t("spotifyAboutArtist")}</span>
             </div>
           </div>
         </div>

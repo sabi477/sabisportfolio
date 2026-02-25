@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState, useRef, useCallback } from "react";
+import { useLocale } from "@/i18n/useLocale";
 
 interface NotesWindowProps {
   onClose: () => void;
@@ -27,6 +28,7 @@ const skills = [
 ];
 
 export default function NotesWindow({ onClose, zIndex, onFocus }: NotesWindowProps) {
+  const { t } = useLocale();
   const [position, setPosition] = useState({
     x: Math.max(50, (typeof window !== "undefined" ? window.innerWidth : 1200) / 2 - 320),
     y: Math.max(30, (typeof window !== "undefined" ? window.innerHeight : 800) / 2 - 280),
@@ -94,7 +96,7 @@ export default function NotesWindow({ onClose, zIndex, onFocus }: NotesWindowPro
 
           <div className="flex-1 flex items-center justify-center">
             <span className="text-[13px] font-medium text-[#3d3329]/80 tracking-tight">
-              Information about: Sabiha, sabihaecemylmaz@gmail.com
+              {t("notesTitle")}
             </span>
           </div>
 
@@ -106,9 +108,9 @@ export default function NotesWindow({ onClose, zIndex, onFocus }: NotesWindowPro
           {/* Sidebar */}
           <div className="w-[130px] bg-[#ebe5de]/60 border-r border-black/5 shrink-0" style={{ padding: "16px 0" }}>
             {[
-              { id: "about" as const, label: "About me" },
-              { id: "skills" as const, label: "Skills" },
-              { id: "contact" as const, label: "Contact" },
+              { id: "about" as const, labelKey: "aboutMe" as const },
+              { id: "skills" as const, labelKey: "skills" as const },
+              { id: "contact" as const, labelKey: "contact" as const },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -120,7 +122,7 @@ export default function NotesWindow({ onClose, zIndex, onFocus }: NotesWindowPro
                 }`}
                 style={{ padding: "10px 20px" }}
               >
-                {tab.label}
+                {t(tab.labelKey)}
               </button>
             ))}
           </div>
@@ -130,7 +132,7 @@ export default function NotesWindow({ onClose, zIndex, onFocus }: NotesWindowPro
             {activeTab === "about" && (
               <div className="flex flex-col" style={{ gap: "20px" }}>
                 <p className="text-[15px] text-[#4a3f34] leading-[1.8]">
-                  Hi, I&apos;m Sabiha. Currently processing my journey as an AI &amp; Data Engineering student at Akdeniz University. I don&apos;t just love technology; I treat it as a dataset to be optimized. From architecting software pipelines to mapping UI/UX experiences, I blend analytical rigour with visual storytelling. I&apos;m driven by the goal of turning raw data into meaningful, creative outcomes that make a measurable difference.
+                  {t("aboutText")}
                 </p>
               </div>
             )}
@@ -138,7 +140,7 @@ export default function NotesWindow({ onClose, zIndex, onFocus }: NotesWindowPro
             {activeTab === "skills" && (
               <div className="flex flex-col" style={{ gap: "16px" }}>
                 <h3 className="text-[13px] font-bold text-[#6b5d4f] uppercase tracking-wider">
-                  I can do...
+                  {t("iCanDo")}
                 </h3>
                 <div className="flex flex-col" style={{ gap: "10px" }}>
                   {skills.map((skill) => (
@@ -158,7 +160,7 @@ export default function NotesWindow({ onClose, zIndex, onFocus }: NotesWindowPro
             {activeTab === "contact" && (
               <div className="flex flex-col" style={{ gap: "20px" }}>
                 <h3 className="text-[13px] font-bold text-[#6b5d4f] uppercase tracking-wider">
-                  Get in touch
+                  {t("getInTouch")}
                 </h3>
                 <div className="flex flex-col" style={{ gap: "14px" }}>
                   <a

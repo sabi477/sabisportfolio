@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Project } from "@/data/projects";
 import { useState, useRef, useCallback, useEffect } from "react";
+import { useLocale } from "@/i18n/useLocale";
 
 interface WindowProps {
   project: Project;
@@ -17,6 +18,7 @@ export default function Window({
   zIndex,
   onFocus,
 }: WindowProps) {
+  const { locale, t } = useLocale();
   const [isMaximized, setIsMaximized] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -133,7 +135,7 @@ export default function Window({
 
               <div className="flex-1 flex items-center justify-center gap-2">
                 <span className="text-[13px] font-medium text-[#3d3329]/80 tracking-tight">
-                  Information about: {project.name}
+                  {t("informationAbout")} {locale === "tr" && project.nameTr ? project.nameTr : project.name}
                 </span>
               </div>
 
@@ -163,7 +165,7 @@ export default function Window({
                   </div>
                   <div className="pt-1">
                     <h2 className="text-[16px] font-semibold text-[#2c2419] leading-tight">
-                      {project.name}
+                      {locale === "tr" && project.nameTr ? project.nameTr : project.name}
                     </h2>
                     <p className="text-[13px] text-[#6b5d4f] mt-1">
                       Sabiha
@@ -172,15 +174,15 @@ export default function Window({
                 </div>
 
                 <p className="text-[14px] text-[#4a3f34] leading-relaxed">
-                  {project.description}
+                  {locale === "tr" && project.descriptionTr ? project.descriptionTr : project.description}
                 </p>
 
                 <div>
                   <h3 className="text-[11px] font-bold text-[#6b5d4f] uppercase tracking-wider mb-2">
-                    Details
+                    {t("details")}
                   </h3>
                   <p className="text-[14px] text-[#4a3f34]">
-                    Type: {project.type} &gt; {project.category}
+                    {t("typeLabel")} {project.type} &gt; {project.category}
                   </p>
                   {project.link && (
                     <a
@@ -194,14 +196,14 @@ export default function Window({
                           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                           </svg>
-                          Say Hi!
+                          {t("sayHi")}
                         </>
                       ) : (
                         <>
                           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                           </svg>
-                          Siteyi Ziyaret Et
+                          {t("visitSite")}
                         </>
                       )}
                     </a>
@@ -210,7 +212,7 @@ export default function Window({
 
                 <div>
                   <h3 className="text-[11px] font-bold text-[#6b5d4f] uppercase tracking-wider mb-3">
-                    {project.folderItems ? "İçerik" : "Preview"}
+                    {project.folderItems ? t("content") : t("preview")}
                   </h3>
                   {project.folderItems && project.folderItems.length > 0 ? (
                     <div className="rounded-lg border border-black/8 bg-[#f0ebe4]/60 overflow-hidden">
@@ -245,7 +247,7 @@ export default function Window({
                           {project.comingSoon && (
                             <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-lg">
                               <span className="text-white text-[18px] font-bold tracking-wide drop-shadow-lg">
-                                Coming Soon...
+                                {t("comingSoon")}
                               </span>
                             </div>
                           )}
