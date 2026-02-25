@@ -77,7 +77,7 @@ function DockIcon({
   );
 
   const y = useSpring(
-    useTransform(distance, [-200, 0, 200], [0, -20, 0]),
+    useTransform(distance, [-200, 0, 200], [0, -26, 0]),
     { stiffness: 350, damping: 25, mass: 0.5 }
   );
 
@@ -93,11 +93,11 @@ function DockIcon({
           : { width: size, height: size, y }
       }
     >
-      <div className="absolute -top-9 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10 hidden md:block">
-        <div className="bg-black/70 text-white text-[11px] font-medium px-2.5 py-1 rounded-md whitespace-nowrap backdrop-blur-xl">
+      <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10 hidden md:block">
+        <div className="bg-black/90 text-white text-[11px] font-medium px-2.5 py-1.5 rounded whitespace-nowrap shadow-lg">
           {label}
         </div>
-        <div className="w-2 h-2 bg-black/70 rotate-45 mx-auto -mt-1" />
+        <div className="w-2 h-2 bg-black/90 rotate-45 mx-auto -mt-1" />
       </div>
 
       <motion.div
@@ -140,13 +140,17 @@ export default function Dock({ onAction }: { onAction?: (id: string) => void }) 
       transition={{ delay: 0.5, type: "spring", stiffness: 200, damping: 20 }}
     >
       <div
-        className={`flex items-end gap-[6px] rounded-2xl bg-white/10 backdrop-blur-2xl border border-white/15 shadow-[0_0_40px_rgba(0,0,0,0.25)] overflow-x-auto overflow-y-hidden scrollbar-hide max-w-full md:max-w-none ${isMobile ? "justify-start" : "justify-center"}`}
-        style={{
-          padding: isMobile ? "6px 10px" : "8px 12px",
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-          WebkitOverflowScrolling: "touch",
-        }}
+        className={`flex items-end gap-[6px] rounded-2xl bg-white/10 backdrop-blur-2xl border border-white/15 shadow-[0_0_40px_rgba(0,0,0,0.25)] max-w-full md:max-w-none ${isMobile ? "justify-start overflow-x-auto scrollbar-hide" : "justify-center overflow-visible"}`}
+        style={
+          isMobile
+            ? {
+                padding: "6px 14px",
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+                WebkitOverflowScrolling: "touch",
+              }
+            : { padding: "8px 20px" }
+        }
         onMouseMove={(e) => mouseX.set(e.clientX)}
         onMouseLeave={() => mouseX.set(Infinity)}
       >
